@@ -1,0 +1,228 @@
+{
+  "type": "object",
+  "properties": {
+    "disposalConsiderations": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/disposalInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "transportInformation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/transportInfoData"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "regulatoryInformation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/regulatoryInfoData"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/confidenceInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "disposalConsiderations",
+    "transportInformation",
+    "regulatoryInformation",
+    "confidence"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "confidenceInfo": {
+      "type": "object",
+      "properties": {
+        "overallConfidence": {
+          "type": "string"
+        },
+        "overallNotes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fieldConfidences": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/fieldConfidence"
+          }
+        }
+      },
+      "required": [
+        "overallConfidence",
+        "overallNotes",
+        "fieldConfidences"
+      ],
+      "additionalProperties": false
+    },
+    "disposalInfo": {
+      "type": "object",
+      "properties": {
+        "disposalMethods": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "contaminatedPackaging": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "specialPrecautions": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "disposalMethods",
+        "contaminatedPackaging",
+        "specialPrecautions"
+      ],
+      "additionalProperties": false
+    },
+    "fieldConfidence": {
+      "type": "object",
+      "properties": {
+        "fieldName": {
+          "type": "string"
+        },
+        "level": {
+          "type": "string"
+        },
+        "sourceSection": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sourcePage": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "fieldName",
+        "level",
+        "sourceSection",
+        "sourcePage"
+      ],
+      "additionalProperties": false
+    },
+    "regulatoryInfoData": {
+      "type": "object",
+      "properties": {
+        "usRegulations": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "euRegulations": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "otherRegulations": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inventoryStatus": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "usRegulations",
+        "euRegulations",
+        "otherRegulations",
+        "inventoryStatus"
+      ],
+      "additionalProperties": false
+    },
+    "transportInfoData": {
+      "type": "object",
+      "properties": {
+        "unNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "properShippingName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hazardClass": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "packingGroup": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "environmentalHazard": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "specialPrecautions": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "unNumber",
+        "properShippingName",
+        "hazardClass",
+        "packingGroup",
+        "environmentalHazard",
+        "specialPrecautions"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

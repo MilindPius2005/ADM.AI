@@ -1,0 +1,288 @@
+{
+  "$defs": {
+    "contactInfo": {
+      "type": "object",
+      "properties": {
+        "name":    { "type": ["string", "null"] },
+        "address": { "type": ["string", "null"] },
+        "phone":   { "type": ["string", "null"] },
+        "email":   { "type": ["string", "null"] }
+      },
+      "required": ["name", "address", "phone", "email"],
+      "additionalProperties": false
+    },
+    "codedStatement": {
+      "type": "object",
+      "properties": {
+        "code":      { "type": ["string", "null"] },
+        "statement": { "type": "string" }
+      },
+      "required": ["code", "statement"],
+      "additionalProperties": false
+    },
+    "compositionComponent": {
+      "type": "object",
+      "properties": {
+        "name":          { "type": "string" },
+        "casNumber":     { "type": ["string", "null"] },
+        "concentration": { "type": ["string", "null"] }
+      },
+      "required": ["name", "casNumber", "concentration"],
+      "additionalProperties": false
+    },
+    "firstAidInfo": {
+      "type": "object",
+      "properties": {
+        "inhalation":  { "type": ["string", "null"] },
+        "skinContact": { "type": ["string", "null"] },
+        "eyeContact":  { "type": ["string", "null"] },
+        "ingestion":   { "type": ["string", "null"] },
+        "notes":       { "type": ["string", "null"] }
+      },
+      "required": ["inhalation", "skinContact", "eyeContact", "ingestion", "notes"],
+      "additionalProperties": false
+    },
+    "fireFightingInfo": {
+      "type": "object",
+      "properties": {
+        "suitableExtinguishingMedia":   { "type": ["string", "null"] },
+        "unsuitableExtinguishingMedia": { "type": ["string", "null"] },
+        "specialHazards":               { "type": ["string", "null"] },
+        "protectiveEquipment":          { "type": ["string", "null"] }
+      },
+      "required": ["suitableExtinguishingMedia", "unsuitableExtinguishingMedia", "specialHazards", "protectiveEquipment"],
+      "additionalProperties": false
+    },
+    "accidentalReleaseInfo": {
+      "type": "object",
+      "properties": {
+        "personalPrecautions":      { "type": ["string", "null"] },
+        "environmentalPrecautions": { "type": ["string", "null"] },
+        "containmentMethods":       { "type": ["string", "null"] },
+        "cleanupMethods":           { "type": ["string", "null"] }
+      },
+      "required": ["personalPrecautions", "environmentalPrecautions", "containmentMethods", "cleanupMethods"],
+      "additionalProperties": false
+    },
+    "handlingStorageInfo": {
+      "type": "object",
+      "properties": {
+        "handlingPrecautions":  { "type": ["string", "null"] },
+        "storageConditions":    { "type": ["string", "null"] },
+        "incompatibleMaterials": { "type": ["string", "null"] }
+      },
+      "required": ["handlingPrecautions", "storageConditions", "incompatibleMaterials"],
+      "additionalProperties": false
+    },
+    "exposureLimit": {
+      "type": "object",
+      "properties": {
+        "substance": { "type": "string" },
+        "limitType": { "type": ["string", "null"] },
+        "value":     { "type": ["string", "null"] }
+      },
+      "required": ["substance", "limitType", "value"],
+      "additionalProperties": false
+    },
+    "exposureControlsInfo": {
+      "type": "object",
+      "properties": {
+        "occupationalExposureLimits": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/exposureLimit" }
+        },
+        "engineeringControls": { "type": ["string", "null"] }
+      },
+      "required": ["occupationalExposureLimits", "engineeringControls"],
+      "additionalProperties": false
+    },
+    "ppeInfo": {
+      "type": "object",
+      "properties": {
+        "respiratory": { "type": ["string", "null"] },
+        "hand":        { "type": ["string", "null"] },
+        "eye":         { "type": ["string", "null"] },
+        "skin":        { "type": ["string", "null"] },
+        "other":       { "type": ["string", "null"] }
+      },
+      "required": ["respiratory", "hand", "eye", "skin", "other"],
+      "additionalProperties": false
+    },
+    "physicalPropertiesInfo": {
+      "type": "object",
+      "properties": {
+        "appearance":                { "type": ["string", "null"] },
+        "odor":                      { "type": ["string", "null"] },
+        "pH":                        { "type": ["string", "null"] },
+        "meltingPoint":              { "type": ["string", "null"] },
+        "boilingPoint":              { "type": ["string", "null"] },
+        "flashPoint":                { "type": ["string", "null"] },
+        "evaporationRate":           { "type": ["string", "null"] },
+        "flammability":              { "type": ["string", "null"] },
+        "vaporPressure":             { "type": ["string", "null"] },
+        "vaporDensity":              { "type": ["string", "null"] },
+        "specificGravity":           { "type": ["string", "null"] },
+        "solubility":                { "type": ["string", "null"] },
+        "autoIgnitionTemperature":   { "type": ["string", "null"] },
+        "decompositionTemperature":  { "type": ["string", "null"] },
+        "viscosity":                 { "type": ["string", "null"] },
+        "molecularWeight":           { "type": ["string", "null"] },
+        "molecularFormula":          { "type": ["string", "null"] }
+      },
+      "required": ["appearance", "odor", "pH", "meltingPoint", "boilingPoint", "flashPoint", "evaporationRate", "flammability", "vaporPressure", "vaporDensity", "specificGravity", "solubility", "autoIgnitionTemperature", "decompositionTemperature", "viscosity", "molecularWeight", "molecularFormula"],
+      "additionalProperties": false
+    },
+    "stabilityReactivityInfo": {
+      "type": "object",
+      "properties": {
+        "stability":                       { "type": ["string", "null"] },
+        "conditionsToAvoid":               { "type": ["string", "null"] },
+        "incompatibleMaterials":           { "type": ["string", "null"] },
+        "hazardousDecompositionProducts":  { "type": ["string", "null"] },
+        "hazardousPolymerization":         { "type": ["string", "null"] }
+      },
+      "required": ["stability", "conditionsToAvoid", "incompatibleMaterials", "hazardousDecompositionProducts", "hazardousPolymerization"],
+      "additionalProperties": false
+    },
+    "toxicologicalInfoData": {
+      "type": "object",
+      "properties": {
+        "acuteToxicity":       { "type": ["string", "null"] },
+        "skinCorrosion":       { "type": ["string", "null"] },
+        "eyeDamage":           { "type": ["string", "null"] },
+        "sensitization":       { "type": ["string", "null"] },
+        "mutagenicity":        { "type": ["string", "null"] },
+        "carcinogenicity":     { "type": ["string", "null"] },
+        "reproductiveToxicity": { "type": ["string", "null"] },
+        "organToxicity":       { "type": ["string", "null"] },
+        "aspirationHazard":    { "type": ["string", "null"] },
+        "additionalNotes":     { "type": ["string", "null"] }
+      },
+      "required": ["acuteToxicity", "skinCorrosion", "eyeDamage", "sensitization", "mutagenicity", "carcinogenicity", "reproductiveToxicity", "organToxicity", "aspirationHazard", "additionalNotes"],
+      "additionalProperties": false
+    },
+    "ecologicalInfoData": {
+      "type": "object",
+      "properties": {
+        "aquaticToxicity":  { "type": ["string", "null"] },
+        "persistence":      { "type": ["string", "null"] },
+        "bioaccumulation":  { "type": ["string", "null"] },
+        "mobility":         { "type": ["string", "null"] },
+        "otherEffects":     { "type": ["string", "null"] }
+      },
+      "required": ["aquaticToxicity", "persistence", "bioaccumulation", "mobility", "otherEffects"],
+      "additionalProperties": false
+    },
+    "disposalInfo": {
+      "type": "object",
+      "properties": {
+        "disposalMethods":        { "type": ["string", "null"] },
+        "contaminatedPackaging":  { "type": ["string", "null"] },
+        "specialPrecautions":     { "type": ["string", "null"] }
+      },
+      "required": ["disposalMethods", "contaminatedPackaging", "specialPrecautions"],
+      "additionalProperties": false
+    },
+    "transportInfoData": {
+      "type": "object",
+      "properties": {
+        "unNumber":              { "type": ["string", "null"] },
+        "properShippingName":    { "type": ["string", "null"] },
+        "hazardClass":           { "type": ["string", "null"] },
+        "packingGroup":          { "type": ["string", "null"] },
+        "environmentalHazard":   { "type": ["string", "null"] },
+        "specialPrecautions":    { "type": ["string", "null"] }
+      },
+      "required": ["unNumber", "properShippingName", "hazardClass", "packingGroup", "environmentalHazard", "specialPrecautions"],
+      "additionalProperties": false
+    },
+    "regulatoryInfoData": {
+      "type": "object",
+      "properties": {
+        "usRegulations":    { "type": ["string", "null"] },
+        "euRegulations":    { "type": ["string", "null"] },
+        "otherRegulations": { "type": ["string", "null"] },
+        "inventoryStatus":  { "type": ["string", "null"] }
+      },
+      "required": ["usRegulations", "euRegulations", "otherRegulations", "inventoryStatus"],
+      "additionalProperties": false
+    },
+    "fieldConfidence": {
+      "type": "object",
+      "properties": {
+        "fieldName":     { "type": "string" },
+        "level":         { "type": "string" },
+        "sourceSection": { "type": ["string", "null"] },
+        "sourcePage":    { "type": ["integer", "null"] }
+      },
+      "required": ["fieldName", "level", "sourceSection", "sourcePage"],
+      "additionalProperties": false
+    },
+    "confidenceInfo": {
+      "type": "object",
+      "properties": {
+        "overallConfidence": { "type": "string" },
+        "overallNotes":      { "type": ["string", "null"] },
+        "fieldConfidences": {
+          "type": ["array", "null"],
+          "items": { "$ref": "#/$defs/fieldConfidence" }
+        }
+      },
+      "required": ["overallConfidence", "overallNotes", "fieldConfidences"],
+      "additionalProperties": false
+    }
+  },
+  "type": "object",
+  "properties": {
+    "chemicalName":       { "type": ["string", "null"] },
+    "productIdentifier":  { "type": ["string", "null"] },
+    "casNumber":          { "type": ["string", "null"] },
+    "unNumber":           { "type": ["string", "null"] },
+    "recommendedUse":     { "type": ["string", "null"] },
+    "manufacturer":       { "anyOf": [{ "$ref": "#/$defs/contactInfo" },       { "type": "null" }] },
+    "supplier":           { "anyOf": [{ "$ref": "#/$defs/contactInfo" },       { "type": "null" }] },
+    "emergencyPhone":     { "type": ["string", "null"] },
+    "signalWord":         { "type": ["string", "null"] },
+    "hazardClassification": {
+      "type": ["array", "null"],
+      "items": { "type": "string" }
+    },
+    "hazardStatements": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/codedStatement" }
+    },
+    "precautionaryStatements": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/codedStatement" }
+    },
+    "composition": {
+      "type": ["array", "null"],
+      "items": { "$ref": "#/$defs/compositionComponent" }
+    },
+    "firstAidMeasures":          { "anyOf": [{ "$ref": "#/$defs/firstAidInfo" },          { "type": "null" }] },
+    "fireFightingMeasures":      { "anyOf": [{ "$ref": "#/$defs/fireFightingInfo" },      { "type": "null" }] },
+    "accidentalReleaseMeasures": { "anyOf": [{ "$ref": "#/$defs/accidentalReleaseInfo" }, { "type": "null" }] },
+    "handlingStorage":           { "anyOf": [{ "$ref": "#/$defs/handlingStorageInfo" },   { "type": "null" }] },
+    "exposureControls":          { "anyOf": [{ "$ref": "#/$defs/exposureControlsInfo" },  { "type": "null" }] },
+    "ppe":                       { "anyOf": [{ "$ref": "#/$defs/ppeInfo" },               { "type": "null" }] },
+    "physicalProperties":        { "anyOf": [{ "$ref": "#/$defs/physicalPropertiesInfo" },{ "type": "null" }] },
+    "stabilityReactivity":       { "anyOf": [{ "$ref": "#/$defs/stabilityReactivityInfo" },{ "type": "null" }] },
+    "toxicologicalInformation":  { "anyOf": [{ "$ref": "#/$defs/toxicologicalInfoData" }, { "type": "null" }] },
+    "ecologicalInformation":     { "anyOf": [{ "$ref": "#/$defs/ecologicalInfoData" },    { "type": "null" }] },
+    "disposalConsiderations":    { "anyOf": [{ "$ref": "#/$defs/disposalInfo" },           { "type": "null" }] },
+    "transportInformation":      { "anyOf": [{ "$ref": "#/$defs/transportInfoData" },     { "type": "null" }] },
+    "regulatoryInformation":     { "anyOf": [{ "$ref": "#/$defs/regulatoryInfoData" },    { "type": "null" }] },
+    "confidence":                { "anyOf": [{ "$ref": "#/$defs/confidenceInfo" },         { "type": "null" }] }
+  },
+  "required": [
+    "chemicalName", "productIdentifier", "casNumber", "unNumber", "recommendedUse",
+    "manufacturer", "supplier", "emergencyPhone", "signalWord",
+    "hazardClassification", "hazardStatements", "precautionaryStatements",
+    "composition", "firstAidMeasures", "fireFightingMeasures",
+    "accidentalReleaseMeasures", "handlingStorage", "exposureControls", "ppe",
+    "physicalProperties", "stabilityReactivity", "toxicologicalInformation",
+    "ecologicalInformation", "disposalConsiderations", "transportInformation",
+    "regulatoryInformation", "confidence"
+  ],
+  "additionalProperties": false
+}

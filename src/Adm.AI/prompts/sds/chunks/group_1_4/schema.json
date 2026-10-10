@@ -1,0 +1,256 @@
+{
+  "type": "object",
+  "properties": {
+    "chemicalName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "productIdentifier": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "casNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unNumber": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "recommendedUse": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "manufacturer": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/contactInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "supplier": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/contactInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "emergencyPhone": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "signalWord": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "hazardClassification": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "hazardStatements": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/codedStatement"
+      }
+    },
+    "precautionaryStatements": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/codedStatement"
+      }
+    },
+    "composition": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/compositionComponent"
+      }
+    },
+    "firstAidMeasures": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/firstAidInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "chemicalName",
+    "productIdentifier",
+    "casNumber",
+    "unNumber",
+    "recommendedUse",
+    "manufacturer",
+    "supplier",
+    "emergencyPhone",
+    "signalWord",
+    "hazardClassification",
+    "hazardStatements",
+    "precautionaryStatements",
+    "composition",
+    "firstAidMeasures"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "codedStatement": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statement": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "statement"
+      ],
+      "additionalProperties": false
+    },
+    "compositionComponent": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "casNumber": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "concentration": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "casNumber",
+        "concentration"
+      ],
+      "additionalProperties": false
+    },
+    "contactInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "address": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "email": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "address",
+        "phone",
+        "email"
+      ],
+      "additionalProperties": false
+    },
+    "firstAidInfo": {
+      "type": "object",
+      "properties": {
+        "inhalation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "skinContact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eyeContact": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ingestion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "inhalation",
+        "skinContact",
+        "eyeContact",
+        "ingestion",
+        "notes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

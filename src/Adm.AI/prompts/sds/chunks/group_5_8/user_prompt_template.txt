@@ -1,0 +1,3 @@
+Extract the requested fields from the following SDS sections:
+
+{DOCUMENT_TEXT}

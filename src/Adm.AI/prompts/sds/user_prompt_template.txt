@@ -1,0 +1,5 @@
+Extract all safety data from the following Safety Data Sheet document.
+
+--- DOCUMENT START ---
+{DOCUMENT_TEXT}
+--- DOCUMENT END ---

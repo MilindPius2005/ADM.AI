@@ -1,0 +1,1 @@
+Analyze the attached SDS page image(s). Identify ALL GHS hazard pictograms that are VISUALLY PRESENT as diamond-shaped red-bordered symbols. Return only pictograms you can actually see — do not guess from text.

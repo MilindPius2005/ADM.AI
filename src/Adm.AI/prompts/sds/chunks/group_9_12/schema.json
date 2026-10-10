@@ -1,0 +1,345 @@
+{
+  "type": "object",
+  "properties": {
+    "physicalProperties": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/physicalPropertiesInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "stabilityReactivity": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/stabilityReactivityInfo"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "toxicologicalInformation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/toxicologicalInfoData"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "ecologicalInformation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ecologicalInfoData"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "physicalProperties",
+    "stabilityReactivity",
+    "toxicologicalInformation",
+    "ecologicalInformation"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "ecologicalInfoData": {
+      "type": "object",
+      "properties": {
+        "aquaticToxicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "persistence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bioaccumulation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mobility": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "otherEffects": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "aquaticToxicity",
+        "persistence",
+        "bioaccumulation",
+        "mobility",
+        "otherEffects"
+      ],
+      "additionalProperties": false
+    },
+    "physicalPropertiesInfo": {
+      "type": "object",
+      "properties": {
+        "appearance": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "odor": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pH": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "meltingPoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "boilingPoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "flashPoint": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "evaporationRate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "flammability": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vaporPressure": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "vaporDensity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "specificGravity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "solubility": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "autoIgnitionTemperature": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decompositionTemperature": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "viscosity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "molecularWeight": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "molecularFormula": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "appearance",
+        "odor",
+        "pH",
+        "meltingPoint",
+        "boilingPoint",
+        "flashPoint",
+        "evaporationRate",
+        "flammability",
+        "vaporPressure",
+        "vaporDensity",
+        "specificGravity",
+        "solubility",
+        "autoIgnitionTemperature",
+        "decompositionTemperature",
+        "viscosity",
+        "molecularWeight",
+        "molecularFormula"
+      ],
+      "additionalProperties": false
+    },
+    "stabilityReactivityInfo": {
+      "type": "object",
+      "properties": {
+        "stability": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "conditionsToAvoid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "incompatibleMaterials": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hazardousDecompositionProducts": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hazardousPolymerization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "stability",
+        "conditionsToAvoid",
+        "incompatibleMaterials",
+        "hazardousDecompositionProducts",
+        "hazardousPolymerization"
+      ],
+      "additionalProperties": false
+    },
+    "toxicologicalInfoData": {
+      "type": "object",
+      "properties": {
+        "acuteToxicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "skinCorrosion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eyeDamage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sensitization": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mutagenicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "carcinogenicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reproductiveToxicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "organToxicity": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "aspirationHazard": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "additionalNotes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "acuteToxicity",
+        "skinCorrosion",
+        "eyeDamage",
+        "sensitization",
+        "mutagenicity",
+        "carcinogenicity",
+        "reproductiveToxicity",
+        "organToxicity",
+        "aspirationHazard",
+        "additionalNotes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
