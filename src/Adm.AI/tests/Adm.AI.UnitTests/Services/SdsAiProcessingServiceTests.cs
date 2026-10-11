@@ -14,6 +14,26 @@ public class SdsAiProcessingServiceTests
     private readonly Mock<ILogger<SdsAiProcessingService>> _loggerMock = new();
 
     [Fact]
+    public async Task ProcessMultimodalAsync_UsesTextAndImagesAndReturnsPictograms()
+    {
+        var service = new SdsAiProcessingService(_openAiMock.Object, _loggerMock.Object);
+        var prompt = new PromptTemplate("system", "user {DOCUMENT_TEXT}", "{}", "1.0");
+        var images = new List<byte[]> { new byte[] { 1, 2, 3 } };
+        _openAiMock.Setup(x => x.GetStructuredVisionCompletionAsync(
+                "system", "user docText", images, "image/jpeg", "sds_extraction", "{}", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new AiCompletionResult(
+                "{\"chemicalName\":\"TestChem\",\"pictograms\":[{\"name\":\"Flame\",\"ghsCode\":\"GHS02\"}]}",
+                10, 20, 30, 0.01m, 100));
+
+        var result = await service.ProcessMultimodalAsync(prompt, "docText", images);
+
+        Assert.Equal("TestChem", result.ExtractionResult.ChemicalName);
+        Assert.Equal("GHS02", Assert.Single(result.ExtractionResult.Pictograms!).GhsCode);
+        _openAiMock.Verify(x => x.GetStructuredVisionCompletionAsync(
+            "system", "user docText", images, "image/jpeg", "sds_extraction", "{}", It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task ProcessAsync_SuccessfulCall_ReturnsDeserializedResult()
     {
         var service = new SdsAiProcessingService(_openAiMock.Object, _loggerMock.Object);

@@ -41,7 +41,7 @@ builder.Services.AddScoped<ITextCleaningService, TextCleaningService>();
 builder.Services.AddScoped<ISdsSectionParser, SdsSectionParser>();
 // Phase 3
 builder.Services.AddScoped<IPromptService, PromptService>();
-builder.Services.AddScoped<IOpenAiProvider, Adm.AI.Infrastructure.Providers.OpenAiProvider>();
+builder.Services.AddSingleton<IOpenAiProvider, Adm.AI.Infrastructure.Providers.OpenAiProvider>();
 builder.Services.AddScoped<IPdfRenderingService, Adm.AI.Infrastructure.Services.PdfRenderingService>();
 builder.Services.AddScoped<ISdsAiProcessingService, SdsAiProcessingService>();
 // Phase 4

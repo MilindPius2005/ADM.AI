@@ -17,5 +17,8 @@ public interface ISdsAiProcessingService
         string schemaName = "sds_extraction",
         CancellationToken ct = default);
 
+    Task<SdsAiResult> ProcessMultimodalAsync(
+        PromptTemplate prompt, string documentText, List<byte[]> images, CancellationToken ct = default);
+
     Task<List<Adm.AI.Domain.Models.GhsPictogram>> DetectPictogramsAsync(PromptTemplate prompt, List<byte[]> images, CancellationToken ct = default);
 }

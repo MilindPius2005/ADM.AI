@@ -61,13 +61,17 @@ public class SdsAiProcessingService : ISdsAiProcessingService
                 }
                 catch (JsonException ex)
                 {
-                    _logger.LogWarning(ex, "Failed to deserialize OpenAI response on attempt {Attempt}. Raw JSON: {RawJson}", attempt, completionResult.JsonContent);
+                    _logger.LogWarning(ex, "Failed to deserialize AI response on attempt {Attempt}", attempt);
                     
                     if (attempt == 2)
                     {
                         throw new AiProcessingException("AI_INVALID_RESPONSE", "Failed to deserialize the AI response after 2 attempts.", ex);
                     }
                 }
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex) when (ex is not AiProcessingException)
             {
@@ -83,6 +87,32 @@ public class SdsAiProcessingService : ISdsAiProcessingService
         }
 
         throw new AiProcessingException("AI_SERVICE_ERROR", "Unknown error during AI processing.");
+    }
+
+    public async Task<SdsAiResult> ProcessMultimodalAsync(
+        PromptTemplate prompt, string documentText, List<byte[]> images, CancellationToken ct = default)
+    {
+        var userPrompt = prompt.UserPromptTemplate.Replace("{DOCUMENT_TEXT}", documentText);
+        for (var attempt = 1; attempt <= 2; attempt++)
+        {
+            ct.ThrowIfCancellationRequested();
+            var completion = await _openAiProvider.GetStructuredVisionCompletionAsync(
+                prompt.SystemPrompt, userPrompt, images, "image/jpeg", "sds_extraction", prompt.JsonSchema, ct);
+            try
+            {
+                var result = JsonSerializer.Deserialize<SdsExtractionResult>(completion.JsonContent, _jsonOptions)
+                    ?? throw new JsonException("The extraction result was null.");
+                return new SdsAiResult(result, completion.PromptTokens, completion.CompletionTokens,
+                    completion.TotalTokens, completion.EstimatedCostUsd, completion.DurationMs);
+            }
+            catch (JsonException ex)
+            {
+                if (attempt == 2)
+                    throw new AiProcessingException("AI_INVALID_RESPONSE", "Could not parse the structured extraction response.", ex);
+                _logger.LogWarning(ex, "Invalid structured extraction response; retrying once");
+            }
+        }
+        throw new AiProcessingException("AI_INVALID_RESPONSE", "Could not parse the structured extraction response.");
     }
 
     public async Task<List<GhsPictogram>> DetectPictogramsAsync(PromptTemplate prompt, List<byte[]> images, CancellationToken ct = default)

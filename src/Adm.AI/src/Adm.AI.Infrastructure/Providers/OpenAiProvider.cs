@@ -16,12 +16,13 @@ public class OpenAiProvider : IOpenAiProvider
     private readonly OpenAiSettings _settings;
     private readonly ChatClient _chatClient;
     private readonly ILogger<OpenAiProvider> _logger;
-    private static readonly SemaphoreSlim _rateLimiter = new SemaphoreSlim(5); // Increased to 5 to process PDFs much faster.
+    private readonly SemaphoreSlim _rateLimiter;
 
-    public OpenAiProvider(IOptions<OpenAiSettings> settings, ILogger<OpenAiProvider> logger)
+    public OpenAiProvider(IOptions<OpenAiSettings> settings, IOptions<AiProcessingSettings> aiSettings, ILogger<OpenAiProvider> logger)
     {
         _settings = settings.Value;
         _logger = logger;
+        _rateLimiter = new SemaphoreSlim(Math.Max(1, aiSettings.Value.MaxConcurrentAiCalls));
         
         if (!string.IsNullOrWhiteSpace(_settings.EndpointUrl))
         {
@@ -97,14 +98,20 @@ public class OpenAiProvider : IOpenAiProvider
         var stopwatch = Stopwatch.StartNew();
         int maxRetries = _settings.MaxRetries > 0 ? _settings.MaxRetries : 5;
         
-        await _rateLimiter.WaitAsync(ct);
-        try
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
-            for (int attempt = 1; attempt <= maxRetries; attempt++)
+            var wait = Stopwatch.StartNew();
+            await _rateLimiter.WaitAsync(ct);
+            _logger.LogInformation("AI slot wait {WaitMs}ms; attempt {Attempt}/{Max}", wait.ElapsedMilliseconds, attempt, maxRetries);
+            int retryDelayMs = 0;
+            try
             {
                 try 
                 {
+                    var call = Stopwatch.StartNew();
                     var completion = await _chatClient.CompleteChatAsync(messages, chatOptions, ct);
+                    _logger.LogInformation("AI call {CallMs}ms; input tokens {InputTokens}; output tokens {OutputTokens}",
+                        call.ElapsedMilliseconds, completion.Value.Usage.InputTokenCount, completion.Value.Usage.OutputTokenCount);
                     stopwatch.Stop();
 
                     var resultText = completion.Value.Content[0].Text;
@@ -125,16 +132,22 @@ public class OpenAiProvider : IOpenAiProvider
                 }
                 catch (ClientResultException ex) when ((ex.Status == 429 || ex.Status == 503 || ex.Status == 500) && attempt < maxRetries)
                 {
-                    var delayMs = attempt * 2500;
-                    _logger.LogWarning("Service error ({Status}) by AI provider. Retrying in {Delay}ms (Attempt {Attempt}/{Max})", ex.Status, delayMs, attempt, maxRetries);
-                    await Task.Delay(delayMs, ct);
+                    retryDelayMs = attempt * 2500;
+                    _logger.LogWarning("Service error ({Status}) by AI provider. Retrying in {Delay}ms (Attempt {Attempt}/{Max})", ex.Status, retryDelayMs, attempt, maxRetries);
                 }
                 catch (ClientResultException ex)
                 {
                     _logger.LogError(ex, "OpenAI API returned an error status.");
-                    throw new AiProcessingException("AI_SERVICE_ERROR", "The AI service returned an error.", ex);
+                    var code = ex.Status switch
+                    {
+                        429 => "AI_RATE_LIMITED",
+                        400 => "AI_BAD_REQUEST",
+                        401 or 403 => "AI_AUTH_ERROR",
+                        _ => "AI_SERVICE_ERROR"
+                    };
+                    throw new AiProcessingException(code, "The AI service returned an error.", ex);
                 }
-                catch (TaskCanceledException ex) when (ex.CancellationToken == ct)
+                catch (OperationCanceledException) when (ct.IsCancellationRequested)
                 {
                     throw;
                 }
@@ -144,10 +157,11 @@ public class OpenAiProvider : IOpenAiProvider
                     throw new AiProcessingException("AI_SERVICE_ERROR", "Failed to call AI service.", ex);
                 }
             }
-        }
-        finally
-        {
-            _rateLimiter.Release();
+            finally
+            {
+                _rateLimiter.Release();
+            }
+            if (retryDelayMs > 0) await Task.Delay(retryDelayMs, ct);
         }
         
         throw new AiProcessingException("AI_TIMEOUT", "Exceeded max retries for AI service.");

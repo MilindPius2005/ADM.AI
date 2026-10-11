@@ -59,7 +59,8 @@ public class SdsAnalysisBatchTests
         var files = new List<(string FileName, byte[] FileBytes, string? ContentType)>
         {
             ("test1.pdf", Encoding.UTF8.GetBytes("content1"), "application/pdf"),
-            ("test2.pdf", Encoding.UTF8.GetBytes("content2"), "application/pdf")
+            ("test2.pdf", Encoding.UTF8.GetBytes("content2"), "application/pdf"),
+            ("test3.pdf", Encoding.UTF8.GetBytes("content3"), "application/pdf")
         };
 
         _concurrencyLimiter.Setup(x => x.ExecuteAsync(It.IsAny<Func<Task<int>>>(), It.IsAny<CancellationToken>()))
@@ -82,12 +83,16 @@ public class SdsAnalysisBatchTests
 
         _aiProcessing.Setup(x => x.ProcessAsync(It.IsAny<PromptTemplate>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new SdsAiResult(new SdsExtractionResult(), 10, 20, 30, 0.01m, 100));
+        _aiProcessing.Setup(x => x.ProcessMultimodalAsync(It.IsAny<PromptTemplate>(), It.IsAny<string>(), It.IsAny<List<byte[]>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new SdsAiResult(new SdsExtractionResult(), 10, 20, 30, 0.01m, 100));
 
         var response = await service.AnalyzeBatchAsync(files);
         
         Assert.NotNull(response);
-        Assert.Equal(2, response.Total);
-        Assert.Equal(2, response.Successful);
+        Assert.Equal(3, response.Total);
+        Assert.Equal(3, response.Successful);
         Assert.Equal(0, response.Failed);
+        _aiProcessing.Verify(x => x.ProcessMultimodalAsync(It.IsAny<PromptTemplate>(), It.IsAny<string>(), It.IsAny<List<byte[]>>(), It.IsAny<CancellationToken>()), Times.Exactly(3));
+        _aiProcessing.Verify(x => x.ProcessAsync(It.IsAny<PromptTemplate>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

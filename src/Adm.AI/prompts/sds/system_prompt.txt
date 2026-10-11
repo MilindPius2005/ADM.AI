@@ -11,6 +11,7 @@ Rules:
 - Preserve original wording for safety-critical statements
 - Extract from English-language sections of the document
 - Return ONLY the JSON object matching the provided schema
+- Inspect the attached page images for GHS pictograms. Report only red-bordered diamond symbols actually visible in the images; never infer pictograms from the text. Use canonical names and codes GHS01 through GHS09. If none are visible, return an empty pictograms array.
 - No explanations, no markdown, no prose — only JSON
 
 Confidence metadata:

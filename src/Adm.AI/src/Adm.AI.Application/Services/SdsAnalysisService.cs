@@ -189,17 +189,34 @@ public class SdsAnalysisService : ISdsAnalysisService
         }
 
         // 4. Extract PDF text
+        var preparation = Stopwatch.StartNew();
         var pdfResult = _pdfExtraction.Extract(fileBytes);
         var cleanedText = _textCleaning.Clean(pdfResult.Text);
+        _logger.LogInformation("PDF text prepared for {FileName} in {ElapsedMs}ms", fileName, preparation.ElapsedMilliseconds);
+        preparation.Restart();
         var images = _pdfRendering.RenderPagesToImages(fileBytes, 1, 2);
-        
-        var visionPrompt = await _promptService.GetPromptAsync("vision", ct);
-        var visionAiTask = _aiProcessing.DetectPictogramsAsync(visionPrompt, images, ct);
+        _logger.LogInformation("PDF images rendered for {FileName} in {ElapsedMs}ms", fileName, preparation.ElapsedMilliseconds);
 
         SdsAiResult aiResult;
         bool chunkingFailed = false;
+        var promptVersion = "single-pass";
 
-        if (_chunkingSettings.Enabled)
+        try
+        {
+            var prompt = await _promptService.GetPromptAsync("sds", ct);
+            aiResult = await _aiProcessing.ProcessMultimodalAsync(prompt, cleanedText, images, ct);
+            _logger.LogInformation("Single-pass extraction for {FileName}: AI time {AiMs}ms, tokens {Tokens}",
+                fileName, aiResult.AiProcessingTimeMs, aiResult.TotalTokens);
+        }
+        catch (AiProcessingException singlePassError) when (!ct.IsCancellationRequested &&
+            (singlePassError.ErrorCode == "AI_INVALID_RESPONSE" || singlePassError.ErrorCode == "AI_BAD_REQUEST"))
+        {
+            _logger.LogWarning(singlePassError, "Single-pass extraction failed for {FileName}; using section fallback", fileName);
+            promptVersion = "fallback";
+            var visionPrompt = await _promptService.GetPromptAsync("vision", ct);
+            var visionAiTask = _aiProcessing.DetectPictogramsAsync(visionPrompt, images, ct);
+
+        if (_chunkingSettings.Enabled && _sectionParser.ParseSections(cleanedText).Count > 0)
         {
             var sections = _sectionParser.ParseSections(cleanedText);
             _logger.LogInformation("SDS Parser found {Count} sections: [{Sections}]", 
@@ -213,11 +230,12 @@ public class SdsAnalysisService : ISdsAnalysisService
                 var groupSections = sections.Where(s => group.Sections.Contains(s.SectionNumber)).ToList();
                 var chunkText = string.Join("\n\n", groupSections.Select(s => $"SECTION {s.SectionNumber}: {s.Title}\n{s.Content}"));
                 
-                // fallback to full text if parsing failed to find anything for this group
+                // A missing group has no useful input; never send the whole PDF four times.
                 if (string.IsNullOrWhiteSpace(chunkText))
                 {
-                    _logger.LogWarning("Chunk {Group} found 0 sections, falling back to full text ({Len} chars)", group.Name, cleanedText.Length);
-                    chunkText = cleanedText; 
+                    _logger.LogWarning("Chunk {Group} found no sections; skipping", group.Name);
+                    chunkingFailed = true;
+                    continue;
                 }
                 else
                 {
@@ -278,6 +296,7 @@ public class SdsAnalysisService : ISdsAnalysisService
             var mergedExtractionResult = aiResult.ExtractionResult with { Pictograms = pictograms };
             aiResult = aiResult with { ExtractionResult = mergedExtractionResult };
         }
+        }
 
         var analysisResultJson = JsonSerializer.Serialize(aiResult.ExtractionResult, _jsonOptions);
 
@@ -290,7 +309,7 @@ public class SdsAnalysisService : ISdsAnalysisService
             ExtractedText = cleanedText,
             AnalysisResultJson = analysisResultJson,
             Status = chunkingFailed ? AnalysisStatus.PartiallyCompleted : AnalysisStatus.Completed,
-            PromptVersion = "chunked",
+            PromptVersion = chunkingFailed ? "fallback-partial" : promptVersion,
             OpenAiModel = _openAiSettings.Model,
             PromptTokens = aiResult.PromptTokens,
             CompletionTokens = aiResult.CompletionTokens,

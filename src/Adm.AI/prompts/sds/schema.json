@@ -234,6 +234,18 @@
   },
   "type": "object",
   "properties": {
+    "pictograms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "enum": ["Exploding bomb", "Flame", "Flame over circle", "Gas cylinder", "Corrosion", "Skull and crossbones", "Exclamation mark", "Health hazard", "Environment"] },
+          "ghsCode": { "type": "string", "enum": ["GHS01", "GHS02", "GHS03", "GHS04", "GHS05", "GHS06", "GHS07", "GHS08", "GHS09"] }
+        },
+        "required": ["name", "ghsCode"],
+        "additionalProperties": false
+      }
+    },
     "chemicalName":       { "type": ["string", "null"] },
     "productIdentifier":  { "type": ["string", "null"] },
     "casNumber":          { "type": ["string", "null"] },
@@ -275,6 +287,7 @@
     "confidence":                { "anyOf": [{ "$ref": "#/$defs/confidenceInfo" },         { "type": "null" }] }
   },
   "required": [
+    "pictograms",
     "chemicalName", "productIdentifier", "casNumber", "unNumber", "recommendedUse",
     "manufacturer", "supplier", "emergencyPhone", "signalWord",
     "hazardClassification", "hazardStatements", "precautionaryStatements",
