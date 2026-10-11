@@ -26,7 +26,7 @@ builder.Services.Configure<SdsChunkingSettings>(
     builder.Configuration.GetSection(SdsChunkingSettings.SectionName));
 
 // ── Database (Switched to InMemory for demo) ──
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseInMemoryDatabase("AdmAiDemoDb"));
 
 // ── Repositories ──
